@@ -1,56 +1,68 @@
 const express = require('express');
 const app = express();
 
-// প্রাকৃতিক সংখ্যা চেক করার ফাংশন
-function isNaturalNumber(num) {
-    if (num === null || num === undefined) return false;
-    const n = Number(num);
-    return Number.isInteger(n) && n > 0;
-}
+// Handle BOTH routes:
+// 1. /app/nasratj_355_gmail_com (for submission)
+// 2. /nasratj_355_gmail_com (for testing)
 
-// GCD (গরিষ্ঠ সাধারণ গুণনীয়ক) গণনা
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
-}
-
-// LCM (লঘিষ্ঠ সাধারণ গুণিতক) গণনা
-function lcm(a, b) {
-    return Math.abs(a * b) / gcd(a, b);
-}
-
-// মেইন এন্ডপয়েন্ট
-app.get('/:email_path', (req, res) => {
-    const { x, y } = req.query;
-    
-    // ভ্যালিডেশন
-    if (!isNaturalNumber(x) || !isNaturalNumber(y)) {
-        return res.type('text/plain').send('NaN');
+function calculateLCM(x, y) {
+    function isNatural(num) {
+        if (!num) return false;
+        const n = parseInt(num);
+        return !isNaN(n) && n > 0;
     }
     
-    // LCM ক্যালকুলেশন
-    const xNum = parseInt(x, 10);
-    const yNum = parseInt(y, 10);
-    const result = lcm(xNum, yNum);
+    if (!isNatural(x) || !isNatural(y)) {
+        return 'NaN';
+    }
     
-    // রেসপন্স
-    res.type('text/plain').send(result.toString());
+    const a = parseInt(x);
+    const b = parseInt(y);
+    
+    function gcd(a, b) {
+        return b === 0 ? a : gcd(b, a % b);
+    }
+    
+    const lcm = Math.abs(a * b) / gcd(a, b);
+    return lcm.toString();
+}
+
+// Route 1: /app/nasratj_355_gmail_com (REQUIRED FOR SUBMISSION)
+app.get('/app/nasratj_355_gmail_com', (req, res) => {
+    const { x, y } = req.query;
+    const result = calculateLCM(x, y);
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(result);
 });
 
-// সার্ভার ওয়েক আপ এর জন্য হেলথ চেক
+// Route 2: /nasratj_355_gmail_com (for backward compatibility)
+app.get('/nasratj_355_gmail_com', (req, res) => {
+    const { x, y } = req.query;
+    const result = calculateLCM(x, y);
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(result);
+});
+
+// Health check
 app.get('/health', (req, res) => {
-    res.send('Server is awake!');
+    res.send('OK');
 });
 
-// রুট এন্ডপয়েন্ট
+// Root
 app.get('/', (req, res) => {
     res.send(`
-        <h1>LCM Calculator API</h1>
-        <p>Use: /your_email_path?x=number&y=number</p>
-        <p>Example: /john_doe_gmail_com?x=12&y=18</p>
+        <h2>LCM Calculator</h2>
+        <p>Test URLs:</p>
+        <ul>
+            <li><a href="/app/nasratj_355_gmail_com?x=12&y=18">/app/nasratj_355_gmail_com?x=12&y=18</a></li>
+            <li><a href="/nasratj_355_gmail_com?x=12&y=18">/nasratj_355_gmail_com?x=12&y=18</a></li>
+            <li><a href="/app/nasratj_355_gmail_com?x=abc&y=5">/app/nasratj_355_gmail_com?x=abc&y=5</a></li>
+        </ul>
     `);
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Test: http://localhost:${PORT}/app/nasratj_355_gmail_com?x=12&y=18`);
 });
