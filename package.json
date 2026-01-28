@@ -1,5 +1,5 @@
 {
-  "name": "task3-lcm",
+  "name": "Intern3",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -9,3 +9,4 @@
     "node": ">=14.0.0"
   }
 }
+
