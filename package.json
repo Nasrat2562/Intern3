@@ -1,12 +1,14 @@
 {
   "name": "Intern3",
   "version": "1.0.0",
-  "description": "LCM Calculator with all edge cases handled",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
   }
 }
