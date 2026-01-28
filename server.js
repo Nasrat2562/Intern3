@@ -1,56 +1,48 @@
-const http = require('http');
-const url = require('url');
+const express = require('express');
+const app = express();
 
-const server = http.createServer((req, res) => {
-    const parsed = url.parse(req.url, true);
-    const path = parsed.pathname;
-    const { x, y } = parsed.query;
-    
-    // Set content type to plain text ALWAYS
-    res.setHeader('Content-Type', 'text/plain');
-    
-    // Handle the exact email endpoint
-    if (path === '/app/nasratj355_gmail_com') {
-        // Check if both parameters exist
-        if (x === undefined || y === undefined) {
-            return res.end('NaN');
+// Root endpoint - simple health check
+app.get('/', (req, res) => {
+    res.send('LCM Calculator API is live. Use /app/nasratj355_gmail_com?x=num&y=num');
+});
+
+// The core task endpoint
+app.get('/app/nasratj355_gmail_com', (req, res) => {
+    const { x, y } = req.query;
+
+    // Function to definitively check for a natural number
+    const isNaturalNumber = (str) => {
+        if (str === null || str === undefined || str === '') {
+            return false;
         }
-        
-        // Convert to numbers
-        const a = Number(x);
-        const b = Number(y);
-        
-        // Natural number check: positive integer
-        const isNatural = (num) => {
-            return Number.isInteger(num) && num > 0;
-        };
-        
-        if (!isNatural(a) || !isNatural(b)) {
-            return res.end('NaN');
-        }
-        
-        // Calculate GCD
-        const gcd = (m, n) => {
-            while (n !== 0) {
-                const temp = n;
-                n = m % n;
-                m = temp;
-            }
-            return m;
-        };
-        
-        // Calculate LCM
-        const lcm = (a * b) / gcd(a, b);
-        
-        // Return as string
-        return res.end(lcm.toString());
+        const num = Number(str);
+        // Must be a number, an integer, and greater than 0
+        return !isNaN(num) && Number.isInteger(num) && num > 0;
+    };
+
+    // Validate inputs
+    if (!isNaturalNumber(x) || !isNaturalNumber(y)) {
+        // Return "NaN" as plain text
+        res.setHeader('Content-Type', 'text/plain');
+        return res.send('NaN');
     }
-    
-    // For all other paths
-    res.end('Server running. Use /app/nasratj355_gmail_com?x=number&y=number');
+
+    // Convert to integers
+    const a = parseInt(x, 10);
+    const b = parseInt(y, 10);
+
+    // Calculate GCD using Euclidean algorithm
+    const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
+
+    // Calculate LCM
+    const lcm = Math.abs(a * b) / gcd(a, b);
+
+    // Return result as plain text string
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(lcm.toString());
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+app.listen(PORT, () => {
+    console.log(`Server running. Test endpoint: /app/nasratj355_gmail_com?x=12&y=18`);
 });
