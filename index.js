@@ -28,7 +28,7 @@ function gcd(a, b) {
  * Replace with your underscored email
  * Example: md.smith2@m-srv.com → md_smith2_m_srv_com
  */
-app.get("/md_smith2_m_srv_com", (req, res) => {
+app.get("/nasratj355_gmail_com", (req, res) => {
   const { x, y } = req.query;
 
   if (!isNaturalNumber(x) || !isNaturalNumber(y)) {
@@ -47,3 +47,4 @@ app.get("/md_smith2_m_srv_com", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
