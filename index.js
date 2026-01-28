@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 
 // Handle BOTH routes:
-// 1. /app/nasratj_355_gmail_com (for submission)
-// 2. /nasratj_355_gmail_com (for testing)
+// 1. /app/nasratj355_gmail_com (for submission)
+// 2. /nasratj355_gmail_com (for testing)
 
 function calculateLCM(x, y) {
     function isNatural(num) {
@@ -27,7 +27,7 @@ function calculateLCM(x, y) {
     return lcm.toString();
 }
 
-// Route 1: /app/nasratj_355_gmail_com (REQUIRED FOR SUBMISSION)
+// Route 1: /app/nasratj355_gmail_com (REQUIRED FOR SUBMISSION)
 app.get('/app/nasratj355_gmail_com', (req, res) => {
     const { x, y } = req.query;
     const result = calculateLCM(x, y);
@@ -36,7 +36,7 @@ app.get('/app/nasratj355_gmail_com', (req, res) => {
 });
 
 // Route 2: /nasratj_355_gmail_com (for backward compatibility)
-app.get('/nasratj_355_gmail_com', (req, res) => {
+app.get('/nasratj355_gmail_com', (req, res) => {
     const { x, y } = req.query;
     const result = calculateLCM(x, y);
     res.setHeader('Content-Type', 'text/plain');
@@ -64,6 +64,7 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`Test: http://localhost:${PORT}/app/nasratj_355_gmail_com?x=12&y=18`);
+    console.log(`Test: http://localhost:${PORT}/app/nasratj355_gmail_com?x=12&y=18`);
 });
+
 
