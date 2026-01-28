@@ -1,39 +1,43 @@
-const http = require('http');
-const url = require('url');
-
-http.createServer((req, res) => {
-    const parsed = url.parse(req.url, true);
+// NO Express, NO dependencies, just pure Node.js
+require('http').createServer((req, res) => {
+    const { parse } = require('url');
+    const { pathname, query } = parse(req.url, true);
     
-    if (parsed.pathname === '/app/nasratj355_gmail_com') {
-        const x = parsed.query.x;
-        const y = parsed.query.y;
+    // Set plain text header FIRST
+    res.setHeader('Content-Type', 'text/plain');
+    
+    // Only handle exact path
+    if (pathname === '/app/nasratj355_gmail_com') {
+        const x = query.x;
+        const y = query.y;
         
-        // Check if parameters exist
-        if (x === undefined || y === undefined) {
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            return res.end('NaN');
+        // Function to check natural number
+        const isNatural = (str) => {
+            if (str === undefined || str === null) return false;
+            const num = Number(str);
+            // Must be: a number, integer, positive
+            return !isNaN(num) && Number.isInteger(num) && num > 0;
+        };
+        
+        // Validate
+        if (!isNatural(x) || !isNatural(y)) {
+            return res.end('NaN');  // Exactly "NaN"
         }
         
-        // Convert to numbers
-        const a = Number(x);
-        const b = Number(y);
+        // Parse integers
+        const a = parseInt(x, 10);
+        const b = parseInt(y, 10);
         
-        // Natural number check
-        const isNatural = (n) => Number.isInteger(n) && n > 0;
-        
-        if (!isNatural(a) || !isNatural(b)) {
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            return res.end('NaN');
-        }
+        // Calculate GCD
+        const gcd = (m, n) => n === 0 ? m : gcd(n, m % n);
         
         // Calculate LCM
-        const gcd = (m, n) => n === 0 ? m : gcd(n, m % n);
-        const lcm = (a * b) / gcd(a, b);
+        const lcm = Math.floor((a * b) / gcd(a, b));
         
-        res.writeHead(200, {'Content-Type': 'text/plain'});
+        // Return digits only
         return res.end(lcm.toString());
     }
     
-    res.writeHead(200, {'Content-Type': 'text/plain'});
+    // For any other path
     res.end('OK');
 }).listen(process.env.PORT || 3000);
