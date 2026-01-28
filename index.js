@@ -28,7 +28,7 @@ function calculateLCM(x, y) {
 }
 
 // Route 1: /app/nasratj_355_gmail_com (REQUIRED FOR SUBMISSION)
-app.get('/app/nasratj_355_gmail_com', (req, res) => {
+app.get('/app/nasratj355_gmail_com', (req, res) => {
     const { x, y } = req.query;
     const result = calculateLCM(x, y);
     res.setHeader('Content-Type', 'text/plain');
@@ -66,3 +66,4 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Test: http://localhost:${PORT}/app/nasratj_355_gmail_com?x=12&y=18`);
 });
+
