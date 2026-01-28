@@ -1,41 +1,53 @@
 const express = require('express');
 const app = express();
 
-// Remove ALL other middleware, just plain response
+// NO middleware, NO body parsing, just raw responses
 app.get('/app/nasratj355_gmail_com', (req, res) => {
     const x = req.query.x;
     const y = req.query.y;
     
     // Convert to numbers
-    const a = Number(x);
-    const b = Number(y);
+    const numX = Number(x);
+    const numY = Number(y);
     
-    // Check: natural numbers only (positive integers)
-    const isNatural = (n) => Number.isInteger(n) && n > 0;
+    // Check if they are natural numbers (positive integers)
+    const isNatural = (n) => {
+        // Check if it's actually a number
+        if (typeof n !== 'number' || isNaN(n)) return false;
+        // Check if integer and positive
+        return Number.isInteger(n) && n > 0;
+    };
     
-    if (!isNatural(a) || !isNatural(b)) {
-        // Send EXACTLY 'NaN' with NO spaces, NO line breaks
+    if (!isNatural(numX) || !isNatural(numY)) {
+        // Return EXACTLY 'NaN' as plain text
         res.setHeader('Content-Type', 'text/plain');
         return res.send('NaN');
     }
     
-    // GCD function
-    const gcd = (m, n) => n === 0 ? m : gcd(n, m % n);
+    // Calculate GCD
+    const gcd = (a, b) => {
+        while (b !== 0) {
+            const temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    };
     
     // Calculate LCM
-    const result = (a * b) / gcd(a, b);
+    const lcm = Math.abs(numX * numY) / gcd(numX, numY);
     
-    // Send EXACTLY the number with NO spaces, NO line breaks
+    // Return EXACTLY the number as plain text
     res.setHeader('Content-Type', 'text/plain');
-    res.send(result.toString());
+    res.send(lcm.toString());
 });
 
-// Root - minimal
+// Root endpoint - minimal
 app.get('/', (req, res) => {
-    res.send('OK');
+    res.send('Server is running. Use /app/nasratj355_gmail_com?x=number&y=number');
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log('Server ready');
+    console.log(`Server running on port ${PORT}`);
 });
