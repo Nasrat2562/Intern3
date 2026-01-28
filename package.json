@@ -1,14 +1,11 @@
 {
   "name": "Intern3",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "engines": {
-    "node": ">=18"
-  },
-  "dependencies": {
-    "express": "^4.19.2"
+    "node": ">=14.0.0"
   }
 }
